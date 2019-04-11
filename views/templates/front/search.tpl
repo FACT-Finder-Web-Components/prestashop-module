@@ -1,11 +1,13 @@
 {extends file='page.tpl'}
 
 {block name='left_column'}
-  <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
-    <div class="block-categories hidden-sm-down" id="search_filters">
-      {widget name="factfinder" hook='asn'}
+  {if $ff.features.asn}
+    <div id="left-column" class="col-xs-12 col-sm-4 col-md-3">
+      <div class="block-categories hidden-sm-down" id="search_filters">
+        {widget name='factfinder' hook='asn'}
+      </div>
     </div>
-  </div>
+  {/if}
 {/block}
 
 {block name='content'}
@@ -19,19 +21,21 @@
     {/block}
 
     <section id="products">
-      {widget name="factfinder" hook='breadcrumb'}
-      {widget name="factfinder" hook='campaign'}
+      {if $ff.features.breadcrumbs}{widget name='factfinder' hook='breadcrumbs'}{/if}
+      {if $ff.features.campaigns}{widget name='factfinder' hook='campaigns'}{/if}
 
       <div class="ff-navigation ff-navigation-top row products-selection">
-        {widget name="factfinder" hook='products_per_page'}
-        {widget name="factfinder" hook='sortbox'}
+        {if $ff.features.products_per_page}{widget name='factfinder' hook='products_per_page'}{/if}
+        {if $ff.features.sorting}{widget name='factfinder' hook='sortbox'}{/if}
       </div>
 
-      {widget name="factfinder" hook='record_list'}
+      {widget name='factfinder' hook='record_list'}
 
-      <div class="ff-navigation ff-navigation-bottom">
-        {widget name="factfinder" hook='paging'}
-      </div>
+      {if $ff.features.campaign}
+        <div class="ff-navigation ff-navigation-bottom">
+          {widget name='factfinder' hook='paging'}
+        </div>
+      {/if}
     </section>
   </section>
 {/block}

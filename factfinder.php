@@ -5,8 +5,10 @@ if (!defined('_PS_VERSION_')) {
 }
 
 use Omikron\Factfinder\Prestashop\CommunicationParams;
+use Omikron\Factfinder\Prestashop\FeaturesConfig;
 use Omikron\Factfinder\Prestashop\Settings\SettingsForm;
 use Omikron\Factfinder\Prestashop\Translate;
+use PrestaShop\PrestaShop\Adapter\Admin\AbstractAdminQueryBuilder as QueryBuilder;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Factfinder extends Module implements WidgetInterface
@@ -60,6 +62,7 @@ class Factfinder extends Module implements WidgetInterface
     public function install()
     {
         return parent::install()
+            && $this->registerHook('actionAdminProductsListingFieldsModifier')
             && $this->registerHook('displayAfterBodyOpeningTag')
             && $this->registerHook('displayTop')
             && $this->registerHook('header');
@@ -68,6 +71,7 @@ class Factfinder extends Module implements WidgetInterface
     public function uninstall()
     {
         return parent::uninstall()
+            && $this->unregisterHook('actionAdminProductsListingFieldsModifier')
             && $this->unregisterHook('displayAfterBodyOpeningTag')
             && $this->unregisterHook('displayTop')
             && $this->unregisterHook('header');
@@ -82,20 +86,44 @@ class Factfinder extends Module implements WidgetInterface
         $this->registerJavascript('bundle.js', ['attributes' => 'defer']);
     }
 
+    public function hookActionAdminProductsListingFieldsModifier($sqlParts)
+    {
+        $sqlParts['sql_select']['description'] = [
+            'table'     => 'pl',
+            'field'     => 'description',
+            'filtering' => QueryBuilder::FILTERING_LIKE_BOTH,
+        ];
+
+        $sqlParts['sql_select']['id_manufacturer'] = [
+            'table' => 'p',
+            'field' => 'id_manufacturer',
+        ];
+
+        $sqlParts['sql_select']['has_attributes'] = ['select' => 'IF(count(pa.id_product_attribute)>0, 1, 0)'];
+
+        $sqlParts['sql_table']['pa'] = [
+            'table' => 'product_attribute',
+            'join'  => 'LEFT JOIN',
+            'on'    => 'pa.`id_product` = p.`id_product`',
+        ];
+
+        $sqlParts['sql_group_by'][] = 'p.id_product';
+    }
+
     public function renderWidget($name, array $configuration)
     {
-        $this->context->smarty->assign('ff', $this->getWidgetVariables($name, $configuration));
+        $this->context->smarty->append('ff', $this->getWidgetVariables($name, $configuration), true);
         return $this->display(__FILE__, isset($this->templates[$name]) ? $this->templates[$name] : "{$name}.tpl");
     }
 
     public function getWidgetVariables($hookName, array $configuration)
     {
-        return [
+        return array_merge($configuration, [
             'communicationParams' => new CommunicationParams($this->context->language->id),
+            'features'            => new FeaturesConfig(),
             'img_path'            => "{$this->_path}views/images",
-            'suggest'             => (bool) \Configuration::get('FF_FEATURE_SUGGEST'),
             'url'                 => ['search' => $this->context->link->getModuleLink($this->name, 'search')],
-        ];
+        ]);
     }
 
     public function getContent()
@@ -108,7 +136,9 @@ class Factfinder extends Module implements WidgetInterface
             $content .= $this->displayConfirmation($this->l('The settings have been updated'));
         }
 
-        return $content . $settings->render(new HelperForm());
+        $form         = new HelperForm();
+        $form->module = $this;
+        return $content . $settings->render($form);
     }
 
     private function registerStylesheet($path, array $params = [], $base = self::WEB_COMPONENTS)

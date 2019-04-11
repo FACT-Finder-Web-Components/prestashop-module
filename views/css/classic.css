@@ -18,7 +18,7 @@ ff-sortbox, ff-products-per-page-dropdown {
 }
 
 ff-sortbox .ffw-selected, ff-products-per-page-dropdown > .ffw-selected {
-    display: inline-block;
+    display: block;
     width: 100%;
     color: #232323;
     background: #fff;

@@ -12,5 +12,5 @@
         </ff-searchbutton>
     </form>
 
-    {if $ff.suggest && $page.page_name neq 'module-factfinder-search'}{widget name="factfinder" hook="suggest"}{/if}
+    {if $ff.features.suggest}{widget name='factfinder' hook='suggest'}{/if}
 </div>

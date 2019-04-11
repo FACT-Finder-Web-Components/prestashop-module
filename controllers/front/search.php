@@ -1,11 +1,16 @@
 <?php
 
+use Omikron\Factfinder\Prestashop\FeaturesConfig;
+
 class FactfinderSearchModuleFrontController extends ModuleFrontController
 {
     public function initContent()
     {
         parent::initContent();
-        $this->context->smarty->assign('ff_search_immediate', 'true');
+        $this->context->smarty->assign('ff', [
+            'features'         => new FeaturesConfig(),
+            'search_immediate' => 'true',
+        ]);
         $this->setTemplate('module:factfinder/views/templates/front/search.tpl');
 
         $theme = $this->context->shop->theme;

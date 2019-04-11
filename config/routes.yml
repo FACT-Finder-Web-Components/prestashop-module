@@ -1,0 +1,5 @@
+factfinder_admin_export_test:
+  path: factfinder/exporttest
+  methods: [GET]
+  defaults:
+    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportTestController::exportAction'

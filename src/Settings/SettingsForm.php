@@ -43,6 +43,7 @@ class SettingsForm
             new GeneralSettings($translate),
             new CommunicationSettings($translate),
             new FeatureSettings($translate),
+            new ExportSettings($translate),
         ]);
     }
 
@@ -56,7 +57,11 @@ class SettingsForm
 
     public function saveConfig()
     {
-        foreach ($this->allFields() as list($name, $lang)) {
+        foreach ($this->allFields() as list($name, $lang, $multiSelect)) {
+            if ($multiSelect) {
+                \Configuration::updateValue($name, implode(',', (array) \Tools::getValue($name, [])));
+                continue;
+            }
             \Configuration::updateValue($name, $lang ? $this->getLocalizedValue($name) : $this->getValue($name));
         }
     }
@@ -98,8 +103,13 @@ class SettingsForm
     private function getFieldValues()
     {
         $values = [];
-        foreach ($this->allFields() as list($name, $lang)) {
-            $values[$name] = $lang ? \Configuration::getInt($name) : \Configuration::get($name);
+        foreach ($this->allFields() as list($name, $lang, $multiSelect)) {
+            $value = $lang ? \Configuration::getInt($name) : \Configuration::get($name);
+            if ($multiSelect) {
+                $name  = "{$name}[]";
+                $value = explode(',', $value);
+            }
+            $values[$name] = $value;
         }
         return $values;
     }
@@ -111,7 +121,11 @@ class SettingsForm
     {
         return array_merge([], ...array_map(function (SectionInterface $section) {
             return array_map(function (array $field) {
-                return [$field['name'], isset($field['lang']) ? $field['lang'] : false];
+                return [
+                    $field['name'],
+                    isset($field['lang']) ? $field['lang'] : false,
+                    $field['type'] == 'select' && isset($field['multiple']) && $field['multiple'] === true,
+                ];
             }, $section->getFormFields());
         }, $this->sections));
     }
@@ -152,7 +166,8 @@ class SettingsForm
      */
     private function getValue($name, $lang = 0)
     {
-        return trim(\Tools::getValue($lang ? "{$name}_{$lang}" : $name, \Configuration::get($name, $lang)));
+        $name = $lang ? "{$name}_{$lang}" : $name;
+        return trim(\Tools::getValue($name, \Configuration::get($name, $lang)));
     }
 
     /**
