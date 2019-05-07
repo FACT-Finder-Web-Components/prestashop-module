@@ -1,5 +1,11 @@
-factfinder_admin_export_test:
-  path: factfinder/exporttest
-  methods: [GET]
+_api_factfinder_admin_export:
+  path: factfinder/export
+  methods: [POST,GET] #@todo change to post only
   defaults:
-    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportTestController::exportAction'
+    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::exportAction'
+
+_api_factfinder_admin_connection_test:
+  path: factfinder/test
+  methods: [POST]
+  defaults:
+    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\TestConnection::testConnectionAction'

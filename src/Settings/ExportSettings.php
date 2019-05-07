@@ -14,7 +14,7 @@ class ExportSettings extends AbstractSection implements SectionInterface
         return [
             'FF_UPLOAD_HOST' => [
                 'type'     => 'text',
-                'label'    => $this->l('Upload host'),
+                'label'    => $this->l('FTP host'),
                 'name'     => 'FF_UPLOAD_HOST',
                 'desc'     => $this->l(
                     'Please specify the FTP server address, where the export file(s) should be uploaded. For example shopname.fact-finder.de.
@@ -23,18 +23,32 @@ class ExportSettings extends AbstractSection implements SectionInterface
                 'required' => true,
             ],
 
+            'FF_UPLOAD_PORT' => [
+                'type'     => 'text',
+                'label'    => $this->l('FTP port'),
+                'name'     => 'FF_UPLOAD_PORT',
+                'required' => true,
+            ],
+
             'FF_UPLOAD_USER' => [
                 'type'     => 'text',
-                'label'    => $this->l('Upload user'),
+                'label'    => $this->l('FTP user'),
                 'name'     => 'FF_UPLOAD_USER',
                 'required' => true,
             ],
 
             'FF_UPLOAD_PASSWORD' => [
                 'type'     => 'password',
-                'label'    => $this->l('Upload password'),
+                'label'    => $this->l('FTP password'),
                 'name'     => 'FF_UPLOAD_PASSWORD',
                 'required' => true,
+            ],
+
+            'FF_UPLOAD_SSL' => [
+                'type'   => 'switch',
+                'label'  => $this->l('SSL enabled'),
+                'name'   => 'FF_UPLOAD_SSL',
+                'values' => [['value' => '1'], ['value' => '0']],
             ],
 
             'FF_AUTOMATIC_IMPORT' => [
@@ -65,10 +79,22 @@ class ExportSettings extends AbstractSection implements SectionInterface
                 'name'     => 'FF_ADDITIONAL_ATTRIBUTES',
                 'desc'     => $this->l('Chosen features that will be exported as with product'),
                 'options'  => [
-                    'query' => \FeatureCore::getFeatures(\Context::getContext()->language->id),
+                    'query' => \Feature::getFeatures(\Context::getContext()->language->id),
                     'id'    => 'id_feature',
                     'name'  => 'name',
                 ],
+            ],
+        ];
+    }
+
+    public function getButtons()
+    {
+        return [
+            'export-feed' => [
+                'title' => 'Export Feed',
+                'class' => 'btn btn-default pull-right',
+                'id'    => 'ffExportFeed',
+                'icon'  => 'process-icon-download-alt',
             ],
         ];
     }

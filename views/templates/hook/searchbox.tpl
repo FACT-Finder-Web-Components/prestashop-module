@@ -11,6 +11,5 @@
             </button>
         </ff-searchbutton>
     </form>
-
     {if $ff.features.suggest}{widget name='factfinder' hook='suggest'}{/if}
 </div>

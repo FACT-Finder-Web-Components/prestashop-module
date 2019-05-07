@@ -13,7 +13,7 @@
 <!-- Set FieldRoles -->
 <script>
     document.addEventListener('ffReady', function () {
-        factfinder.communication.fieldRoles = {"brand":"Manufacturer","campaignProductNumber":"ProductNumber","deeplink":"ProductUrl","description":"Description","displayProductNumber":"ProductNumber","ean":"EAN","imageUrl":"ImageUrl","masterArticleNumber":"MasterProductNumber","price":"Price","productName":"Name","trackingProductNumber":"ProductNumber"};
+        factfinder.communication.fieldRoles = {/literal}{$ff.field_roles|@json_encode nofilter}{literal};
 
         factfinder.communication.FFCommunicationEventAggregator.addBeforeDispatchingCallback(function (event) {
             var redirectPath = '{/literal}{$ff.url.search}{literal}';

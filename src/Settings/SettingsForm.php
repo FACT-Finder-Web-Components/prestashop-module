@@ -57,12 +57,15 @@ class SettingsForm
 
     public function saveConfig()
     {
-        foreach ($this->allFields() as list($name, $lang, $multiSelect)) {
+        foreach ($this->allFields() as list($name, $lang, $multiSelect, $password)) {
             if ($multiSelect) {
                 \Configuration::updateValue($name, implode(',', (array) \Tools::getValue($name, [])));
                 continue;
             }
-            \Configuration::updateValue($name, $lang ? $this->getLocalizedValue($name) : $this->getValue($name));
+            $value = $lang ? $this->getLocalizedValue($name) : $this->getValue($name);
+            if (($password && $value != null) || !$password) {
+                \Configuration::updateValue($name, $value);
+            }
         }
     }
 
@@ -89,9 +92,10 @@ class SettingsForm
         return array_map(function (SectionInterface $section) {
             return [
                 'form' => [
-                    'legend' => ['title' => $section->getTitle(), 'icon' => 'icon-cogs'],
-                    'input'  => $section->getFormFields(),
-                    'submit' => ['title' => $this->l('Save')],
+                    'legend'  => ['title' => $section->getTitle(), 'icon' => 'icon-cogs'],
+                    'input'   => $section->getFormFields(),
+                    'submit'  => ['title' => $this->l('Save')],
+                    'buttons' => $section->getButtons(),
                 ],
             ];
         }, $this->sections);
@@ -125,6 +129,7 @@ class SettingsForm
                     $field['name'],
                     isset($field['lang']) ? $field['lang'] : false,
                     $field['type'] == 'select' && isset($field['multiple']) && $field['multiple'] === true,
+                    $field['type'] == 'password',
                 ];
             }, $section->getFormFields());
         }, $this->sections));

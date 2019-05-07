@@ -21,4 +21,14 @@ abstract class AbstractSection
     {
         return (string) call_user_func($this->translate, $string);
     }
+
+    /**
+     * Gets the form buttons definitions
+     *
+     * @return array
+     */
+    public function getButtons()
+    {
+        return [];
+    }
 }

@@ -13,4 +13,11 @@ interface SectionInterface
      * @return array
      */
     public function getFormFields();
+
+    /**
+     * Gets the form buttons definitions
+     *
+     * @return array
+     */
+    public function getButtons();
 }

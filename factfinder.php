@@ -4,16 +4,18 @@ if (!defined('_PS_VERSION_')) {
     exit;
 }
 
-use Omikron\Factfinder\Prestashop\CommunicationParams;
+use Omikron\Factfinder\Prestashop\Config\CommunicationParams;
+use Omikron\Factfinder\Prestashop\Config\FieldRoles;
 use Omikron\Factfinder\Prestashop\FeaturesConfig;
 use Omikron\Factfinder\Prestashop\Settings\SettingsForm;
 use Omikron\Factfinder\Prestashop\Translate;
 use PrestaShop\PrestaShop\Adapter\Admin\AbstractAdminQueryBuilder as QueryBuilder;
+use PrestaShop\PrestaShop\Adapter\Presenter\Order\OrderPresenter;
 use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Factfinder extends Module implements WidgetInterface
 {
-    const WEB_COMPONENTS = 'ff-web-components-3.1.1';
+    const WEB_COMPONENTS = 'ff-web-components-3.2.0';
 
     /** @var string */
     public $name = 'factfinder';
@@ -64,8 +66,10 @@ class Factfinder extends Module implements WidgetInterface
         return parent::install()
             && $this->registerHook('actionAdminProductsListingFieldsModifier')
             && $this->registerHook('displayAfterBodyOpeningTag')
+            && $this->registerHook('displayOrderConfirmation')
             && $this->registerHook('displayTop')
-            && $this->registerHook('header');
+            && $this->registerHook('header')
+            && $this->registerHook('moduleRoutes');
     }
 
     public function uninstall()
@@ -73,14 +77,16 @@ class Factfinder extends Module implements WidgetInterface
         return parent::uninstall()
             && $this->unregisterHook('actionAdminProductsListingFieldsModifier')
             && $this->unregisterHook('displayAfterBodyOpeningTag')
+            && $this->unregisterHook('displayOrderConfirmation')
             && $this->unregisterHook('displayTop')
-            && $this->unregisterHook('header');
+            && $this->unregisterHook('header')
+            && $this->unregisterHook('moduleRoutes');
     }
 
     public function hookHeader()
     {
-        $this->registerStylesheet('default-styles.css');
         $this->registerStylesheet('classic.css', [], 'css');
+        $this->registerStylesheet('suggest.css', [], 'css');
         $this->registerJavascript('vendor/custom-elements-es5-adapter.js');
         $this->registerJavascript('vendor/webcomponents-loader.js');
         $this->registerJavascript('bundle.js', ['attributes' => 'defer']);
@@ -110,6 +116,30 @@ class Factfinder extends Module implements WidgetInterface
         $sqlParts['sql_group_by'][] = 'p.id_product';
     }
 
+    public function hookModuleRoutes()
+    {
+        return [
+            'ff-proxy' => [
+                'controller' => 'proxy',
+                'rule'       => 'FACT-Finder/{endpoint}',
+                'keywords'   => [
+                    'endpoint' => ['regexp' => '[A-Z][a-z]*\.ff', 'param' => 'endpoint'],
+                ],
+                'params'     => [
+                    'ajax'   => true,
+                    'fc'     => 'module',
+                    'module' => $this->name,
+                ],
+            ],
+        ];
+    }
+
+    public function hookDisplayOrderConfirmation(array $configuration)
+    {
+        $this->context->smarty->assign('order', (new OrderPresenter())->present($configuration['order']));
+        return $this->display(__FILE__, 'checkout-tracking.tpl');
+    }
+
     public function renderWidget($name, array $configuration)
     {
         $this->context->smarty->append('ff', $this->getWidgetVariables($name, $configuration), true);
@@ -121,6 +151,7 @@ class Factfinder extends Module implements WidgetInterface
         return array_merge($configuration, [
             'communicationParams' => new CommunicationParams($this->context->language->id),
             'features'            => new FeaturesConfig(),
+            'field_roles'         => new FieldRoles(),
             'img_path'            => "{$this->_path}views/images",
             'url'                 => ['search' => $this->context->link->getModuleLink($this->name, 'search')],
         ]);
@@ -128,6 +159,8 @@ class Factfinder extends Module implements WidgetInterface
 
     public function getContent()
     {
+        $this->context->controller->addJS($this->_path . 'views/js/ajax-action.js');
+
         $content  = '';
         $settings = SettingsForm::build(new Translate($this), $this->context);
 

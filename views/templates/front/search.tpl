@@ -25,13 +25,13 @@
       {if $ff.features.campaigns}{widget name='factfinder' hook='campaigns'}{/if}
 
       <div class="ff-navigation ff-navigation-top row products-selection">
-        {if $ff.features.products_per_page}{widget name='factfinder' hook='products_per_page'}{/if}
+        {if $ff.features.products_per_page}{widget name='factfinder' hook='products-per-page'}{/if}
         {if $ff.features.sorting}{widget name='factfinder' hook='sortbox'}{/if}
       </div>
 
-      {widget name='factfinder' hook='record_list'}
+      {widget name='factfinder' hook='record-list'}
 
-      {if $ff.features.campaign}
+      {if $ff.features.paging}
         <div class="ff-navigation ff-navigation-bottom">
           {widget name='factfinder' hook='paging'}
         </div>

@@ -60,4 +60,16 @@ class GeneralSettings extends AbstractSection implements SectionInterface
             ],
         ];
     }
+
+    public function getButtons()
+    {
+        return [
+            'testConnection' => [
+                'title' => 'Test connection',
+                'class' => 'btn btn-default pull-right',
+                'id'    => 'ffTestConnection',
+                'icon'  => 'process-icon-ok',
+            ],
+        ];
+    }
 }
