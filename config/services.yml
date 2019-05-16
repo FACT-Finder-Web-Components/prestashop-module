@@ -56,7 +56,6 @@ services:
     class: Omikron\Factfinder\Prestashop\Model\Api\Client
     decorates: factfinder.api_client_interface
     arguments: ['@factfinder.json_serializer']
-    public: false
 
   factfinder.api_test_connection:
     class: Omikron\Factfinder\Prestashop\Api\TestConnection
@@ -87,3 +86,23 @@ services:
     calls:
       - method: setFileName
         arguments: ["@=service('factfinder.export.catalog.name_provider').getName()"]
+
+  factfinder_feed_export_command:
+    class: Omikron\Factfinder\Prestashop\Command\ExportCommand
+    arguments:
+      - "@factfinder.export.output.csv"
+      - "@prestashop.core.export.dir"
+      - "@factfinder.cron.emulate_environment"
+      - "@factfinder.export.file_writer"
+    tags:
+      - { name: 'console.command' }
+
+  factfinder.cron.emulate_environment:
+    class: Omikron\Factfinder\Prestashop\Model\Cron\EmulateEnvironment
+    arguments:
+      - '@kernel'
+    public: false
+
+  factfinder.export.file_writer:
+    class: Omikron\Factfinder\Prestashop\Model\Export\FileWriter
+

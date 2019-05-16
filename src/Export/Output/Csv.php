@@ -48,7 +48,9 @@ class Csv extends AbstractOutput implements OutputInterface
 
     public function __destruct()
     {
-        unlink($this->handle->getPathname());
+        if ($this->handle) {
+            unlink($this->handle->getPathname());
+        }
     }
 
     /**

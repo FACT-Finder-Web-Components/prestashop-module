@@ -14,7 +14,14 @@ class CategoryPath implements ProductFieldInterface
 
     public function getValue($productId)
     {
-        $categories = array_column(\Product::getProductCategoriesFull($productId, $this->languageId), 'name');
-        return implode('|', array_map('urlencode', $categories));
+        $categories = $this->filterCategories(array_column(\Product::getProductCategoriesFull($productId, $this->languageId), 'name'));
+        return implode('/', array_map('urlencode', $categories));
+    }
+
+    private function filterCategories($categories)
+    {
+        return array_filter($categories, function ($category) {
+            return $category != 'Home' ? true : false;
+        });
     }
 }
