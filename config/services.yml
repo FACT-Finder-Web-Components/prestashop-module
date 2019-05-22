@@ -99,10 +99,8 @@ services:
 
   factfinder.cron.emulate_environment:
     class: Omikron\Factfinder\Prestashop\Model\Cron\EmulateEnvironment
-    arguments:
-      - '@kernel'
+    arguments: ['@kernel']
     public: false
 
   factfinder.export.file_writer:
     class: Omikron\Factfinder\Prestashop\Model\Export\FileWriter
-

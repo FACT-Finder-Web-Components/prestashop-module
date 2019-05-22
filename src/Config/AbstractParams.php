@@ -5,7 +5,7 @@ namespace Omikron\Factfinder\Prestashop\Config;
 abstract class AbstractParams implements \ArrayAccess
 {
     /** @var array */
-    protected $params;
+    protected $params = [];
 
     public function offsetExists($offset)
     {
@@ -14,7 +14,7 @@ abstract class AbstractParams implements \ArrayAccess
 
     public function offsetGet($offset)
     {
-        return isset($this->params[$offset]) ? $this->params[$offset] : '';
+        return $this->offsetExists($offset) ? \Configuration::get((string) $this->params[$offset]) : '';
     }
 
     public function offsetSet($offset, $value)
