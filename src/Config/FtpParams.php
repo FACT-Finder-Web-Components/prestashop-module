@@ -2,16 +2,30 @@
 
 namespace Omikron\Factfinder\Prestashop\Config;
 
-class FtpParams extends AbstractParams
+class FtpParams
 {
-    public function __construct()
+    public function getHost()
     {
-        $this->params = [
-            'host'     => 'FF_UPLOAD_HOST',
-            'port'     => 'FF_UPLOAD_PORT',
-            'user'     => 'FF_UPLOAD_USER',
-            'password' => 'FF_UPLOAD_PASSWORD',
-            'use-ssl'  => 'FF_UPLOAD_SSL',
-        ];
+        return \Configuration::get('FF_UPLOAD_HOST');
+    }
+
+    public function getPort()
+    {
+        return \Configuration::get('FF_UPLOAD_PORT');
+    }
+
+    public function getUser()
+    {
+        return \Configuration::get('FF_UPLOAD_USER');
+    }
+
+    public function getPassword()
+    {
+        return \Configuration::get('FF_UPLOAD_PASSWORD');
+    }
+
+    public function useSsl()
+    {
+        return (bool) \Configuration::get('FF_UPLOAD_SSL');
     }
 }

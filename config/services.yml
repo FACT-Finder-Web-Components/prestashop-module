@@ -14,8 +14,8 @@ parameters:
     Attributes: 'Attributes'
 
 services:
-  _defaults:
-    public: true
+  factfinder.config.ftp_params:
+    class: Omikron\Factfinder\Prestashop\Config\FtpParams
 
   factfinder.api_client_interface:
     class: Omikron\Factfinder\Prestashop\Model\Api\ClientInterface
@@ -37,14 +37,13 @@ services:
   factfinder.export.output.csv:
     class: Omikron\Factfinder\Prestashop\Export\Output\Csv
     arguments:
-      - "@prestashop.core.export.dir"
-      - "@factfinder.export.data_provider_interface"
+      - '@factfinder.export.data_provider_interface'
       - '%factfinder.export.catalog.columns%'
 
   factfinder.export.output.dump:
     class: Omikron\Factfinder\Prestashop\Export\Output\Dump
     arguments:
-      - "@factfinder.export.data_provider_interface"
+      - '@factfinder.export.data_provider_interface'
       - '%factfinder.export.catalog.columns%'
 
   factfinder.export.catalog.data_provider:
@@ -72,9 +71,8 @@ services:
     arguments: ['@serializer']
 
   factfinder.export_ftp:
-    class: Omikron\Factfinder\Prestashop\Model\Export\Ftp
-    arguments:
-      - "@=service('factfinder.export.catalog.name_provider').getName()"
+    class: Omikron\Factfinder\Prestashop\Model\Export\FtpClient
+    arguments: ['@factfinder.config.ftp_params']
 
   factfinder.export.catalog.name_provider:
     class: Omikron\Factfinder\Prestashop\Model\Export\Catalog\NameProvider
@@ -82,20 +80,10 @@ services:
   factfinder.export.catalog.csv_download:
     class: PrestaShopBundle\Component\CsvResponse
     arguments:
-      - "@factfinder.export.output.csv"
+      - '@factfinder.export.output.csv'
     calls:
       - method: setFileName
-        arguments: ["@=service('factfinder.export.catalog.name_provider').getName()"]
-
-  factfinder_feed_export_command:
-    class: Omikron\Factfinder\Prestashop\Command\ExportCommand
-    arguments:
-      - "@factfinder.export.output.csv"
-      - "@prestashop.core.export.dir"
-      - "@factfinder.cron.emulate_environment"
-      - "@factfinder.export.file_writer"
-    tags:
-      - { name: 'console.command' }
+        arguments: ['@=service("factfinder.export.catalog.name_provider").getName()']
 
   factfinder.cron.emulate_environment:
     class: Omikron\Factfinder\Prestashop\Model\Cron\EmulateEnvironment
@@ -103,3 +91,21 @@ services:
 
   factfinder.export.file_writer:
     class: Omikron\Factfinder\Prestashop\Model\Export\FileWriter
+
+  factfinder.command.feed.upload:
+    class: Omikron\Factfinder\Prestashop\Command\Feed\UploadCommand
+    arguments:
+      - '@factfinder.export.output.csv'
+      - '@factfinder.cron.emulate_environment'
+      - '@factfinder.export_ftp'
+      - '@factfinder.api_push_import'
+    tags: ['console.command']
+
+  factfinder.command.feed.save:
+    class: Omikron\Factfinder\Prestashop\Command\Feed\SaveCommand
+    arguments:
+      - '@kernel'
+      - '@factfinder.export.output.csv'
+      - '@factfinder.cron.emulate_environment'
+      - '@factfinder.export.file_writer'
+    tags: ['console.command']

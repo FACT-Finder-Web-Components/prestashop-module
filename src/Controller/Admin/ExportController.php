@@ -7,7 +7,7 @@ use Omikron\Factfinder\Prestashop\Config\FtpParams;
 use Omikron\Factfinder\Prestashop\DataTransferObject\AjaxResponse;
 use Omikron\Factfinder\Prestashop\Export\Output\Csv;
 use Omikron\Factfinder\Prestashop\Export\Output\Dump;
-use Omikron\Factfinder\Prestashop\Model\Export\Ftp;
+use Omikron\Factfinder\Prestashop\Model\Export\FtpClient;
 use PrestaShopBundle\Component\CsvResponse;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,20 +33,20 @@ class ExportController extends FrameworkBundleAdminController
                 break;
             default:
                 try {
-                    /** @var Ftp $ftp */
+                    /** @var FtpClient $ftp */
                     $ftp = $this->get('factfinder.export_ftp');
-                    $ftpParams = new FtpParams();
-                    $ftp->open($ftpParams)->upload($csv->write())->close();
+                    $ftp->upload($csv->write(), (string) $this->get('factfinder.export.catalog.name_provider'));
 
                     /** @var PushImport $pushImport */
                     $pushImport = $this->get('factfinder.api_push_import');
                     $pushImport->execute();
 
                     $response = $this->json(new AjaxResponse(
-                        sprintf('Feed was successfully generated and uploaded to %s', $ftpParams['host'])));
+                        'Feed was successfully generated and uploaded to ' . $this->get(FtpParams::class)->getHost()));
                 } catch (\Exception $e) {
                     $response = $this->json(new AjaxResponse('Feed Export failed. Reason:', $e->getMessage()), 400);
                 }
+                break;
         }
 
         return $response;

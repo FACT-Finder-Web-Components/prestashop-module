@@ -20,7 +20,7 @@ class FileWriter
             $exportFile = new SplFileObject($filePath, 'w');
         } catch (\Exception $e) {
             throw new FileWritingException(
-                sprintf('Cannot open export file for writing'),
+                sprintf('Cannot open export file %s for writing', $filePath),
                 FileWritingException::CANNOT_OPEN_FILE_FOR_WRITING
             );
         }
