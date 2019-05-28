@@ -15,4 +15,3 @@ factfinder.feed.save:
   methods: GET
   defaults:
     _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::saveAction'
-
