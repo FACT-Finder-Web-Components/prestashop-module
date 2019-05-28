@@ -3,7 +3,6 @@
 namespace Omikron\Factfinder\Prestashop\Controller\Admin;
 
 use Omikron\Factfinder\Prestashop\Api\PushImport;
-use Omikron\Factfinder\Prestashop\Config\FtpParams;
 use Omikron\Factfinder\Prestashop\DataTransferObject\AjaxResponse;
 use Omikron\Factfinder\Prestashop\Export\Output\Csv;
 use Omikron\Factfinder\Prestashop\Export\Output\Dump;
@@ -42,7 +41,7 @@ class ExportController extends FrameworkBundleAdminController
                     $pushImport->execute();
 
                     $response = $this->json(new AjaxResponse(
-                        'Feed was successfully generated and uploaded to ' . $this->get(FtpParams::class)->getHost()));
+                        'Feed was successfully generated and uploaded to ' . $this->get('factfinder.config.ftp_params')->getHost()));
                 } catch (\Exception $e) {
                     $response = $this->json(new AjaxResponse('Feed Export failed. Reason:', $e->getMessage()), 400);
                 }
