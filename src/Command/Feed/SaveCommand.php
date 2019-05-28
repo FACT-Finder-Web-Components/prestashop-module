@@ -54,7 +54,11 @@ class SaveCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $filePath = sprintf('%s/%s', $this->getExportDir($input->getOption(self::ADMIN_DIR)), new NameProvider());
-        $this->fileWriter->save($this->exportCsv->write(), $filePath);
+
+        $export = $this->exportCsv->write();
+        $this->fileWriter->save($export, $filePath);
+        fclose($export);
+
         $output->writeln('Feed file successfully saved in ' . $filePath);
     }
 

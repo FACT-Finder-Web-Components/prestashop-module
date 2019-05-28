@@ -8,13 +8,12 @@ use SplFileObject;
 class FileWriter
 {
     /**
-     * @param SplFileObject $handle
-     * @param string        $filePath
+     * @param resource $handle
+     * @param string   $filePath
      *
-     * @return SplFileObject
      * @throws FileWritingException
      */
-    public function save(SplFileObject $handle, $filePath)
+    public function save($handle, $filePath)
     {
         try {
             $exportFile = new SplFileObject($filePath, 'w');
@@ -25,10 +24,8 @@ class FileWriter
             );
         }
 
-        while (($data = $handle->fgetcsv(';')) != false) {
+        while (($data = fgetcsv($handle, ';')) != false) {
             $exportFile->fputcsv($data, ';');
         }
-
-        return $exportFile;
     }
 }

@@ -3,7 +3,6 @@
 namespace Omikron\Factfinder\Prestashop\Model\Export;
 
 use Omikron\Factfinder\Prestashop\Config\FtpParams;
-use SplFileObject as File;
 
 class FtpClient
 {
@@ -16,18 +15,19 @@ class FtpClient
     }
 
     /**
-     * @param File   $handle
-     * @param string $filename
+     * @param resource $handle
+     * @param string   $filename
      *
      * @throws \Exception
      */
-    public function upload(File $handle, $filename = '')
+    public function upload($handle, $filename = '')
     {
         $connection = $this->connect($this->config);
 
         try {
-            ftp_fput($connection, $filename ?: $handle->getFilename(), fopen($handle->getFileInfo(), '+r'), FTP_ASCII);
+            ftp_fput($connection, $filename, $handle, FTP_ASCII);
         } finally {
+            fclose($handle);
             $this->close($connection);
         }
     }

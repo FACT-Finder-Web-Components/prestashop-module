@@ -3,16 +3,11 @@
 namespace Omikron\Factfinder\Prestashop\Export\Output;
 
 use Omikron\Factfinder\Prestashop\Model\Export\DataProviderInterface;
-use Omikron\Factfinder\Prestashop\Model\Export\ExportEntityInterface;
-use SplFileObject;
 
 class Csv extends AbstractOutput implements OutputInterface
 {
     /** @var DataProviderInterface */
     private $dataProvider;
-
-    /** @var SplFileObject */
-    private $handle;
 
     /**
      * Csv constructor.
@@ -31,24 +26,24 @@ class Csv extends AbstractOutput implements OutputInterface
 
     public function __invoke()
     {
-        $this->write();
-        $this->handle->fpassthru();
-        $this->handle->rewind();
+        $export = $this->write();
+        fpassthru($export);
+        fclose($export);
     }
 
     /**
-     * @return SplFileObject
+     * @return resource
      */
     public function write()
     {
-        $this->handle = new SplFileObject('php://temp', 'w+');
-        $this->handle->fputcsv($this->headersData, ';');
+        $handle = tmpfile();
+        fputcsv($handle, $this->headersData, ';');
 
-        /** @var ExportEntityInterface $line */
         foreach ($this->dataProvider->getEntities() as $line) {
-            $this->handle->fputcsv($this->prepareRow($line->toArray()), ';');
+            fputcsv($handle, $this->prepareRow($line->toArray()), ';');
         }
-        $this->handle->rewind();
-        return $this->handle;
+
+        rewind($handle);
+        return $handle;
     }
 }
