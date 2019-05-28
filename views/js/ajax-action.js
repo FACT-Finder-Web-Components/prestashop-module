@@ -2,7 +2,6 @@
     $.widget('factfinder.ajaxAction', {
         options: {
             actionUrl: 'modules/factfinder/test',
-            buttonId: '#ffTestConnection',
             method: 'POST',
             payload: {},
             onSuccess: function (res) {

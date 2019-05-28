@@ -14,6 +14,9 @@ parameters:
     Attributes: 'Attributes'
 
 services:
+  _defaults:
+    public: true
+
   factfinder.config.ftp_params:
     class: Omikron\Factfinder\Prestashop\Config\FtpParams
 

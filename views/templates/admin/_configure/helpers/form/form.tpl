@@ -3,7 +3,8 @@
 {block name='script'}
 {literal}
     jQuery(function($) {
-        $('#ffExportFeed').ajaxAction({buttonId: '#ffExportFeed', actionUrl: 'modules/factfinder/export'});
+        $('#ffUploadFeed').ajaxAction({actionUrl: 'modules/factfinder/export'});
+
         $('#ffTestConnection').ajaxAction({
             payload: function() {
                 return {

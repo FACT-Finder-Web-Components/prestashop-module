@@ -7,10 +7,8 @@ use Omikron\Factfinder\Prestashop\DataTransferObject\AjaxResponse;
 use Omikron\Factfinder\Prestashop\Export\Output\Csv;
 use Omikron\Factfinder\Prestashop\Export\Output\Dump;
 use Omikron\Factfinder\Prestashop\Model\Export\FtpClient;
-use PrestaShopBundle\Component\CsvResponse;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
 use Symfony\Component\HttpFoundation\Response;
-use Tools;
 
 class ExportController extends FrameworkBundleAdminController
 {
@@ -19,16 +17,12 @@ class ExportController extends FrameworkBundleAdminController
         /** @var Csv $csv */
         $csv = $this->get('factfinder.export.output.csv');
 
-        switch (Tools::getValue('mode')) {
+        switch (\Tools::getValue('mode')) {
             case 'dump':
                 /** @var Dump $dumper */
                 $dumper = $this->get('factfinder.export.output.dump');
                 $dumper->write();
                 $response = new Response();
-                break;
-            case 'download':
-                /** @var CsvResponse $response */
-                $response = $this->get('factfinder.export.catalog.csv_download');
                 break;
             default:
                 try {
@@ -49,5 +43,10 @@ class ExportController extends FrameworkBundleAdminController
         }
 
         return $response;
+    }
+
+    public function saveAction()
+    {
+        return $this->get('factfinder.export.catalog.csv_download');
     }
 }

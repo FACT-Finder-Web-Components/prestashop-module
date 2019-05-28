@@ -9,3 +9,10 @@ _api_factfinder_admin_connection_test:
   methods: [POST]
   defaults:
     _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\TestConnection::testConnectionAction'
+
+factfinder.feed.save:
+  path: factfinder/feed/save
+  methods: GET
+  defaults:
+    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::saveAction'
+

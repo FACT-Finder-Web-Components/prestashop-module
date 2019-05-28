@@ -90,11 +90,19 @@ class ExportSettings extends AbstractSection implements SectionInterface
     public function getButtons()
     {
         return [
-            'export-feed' => [
-                'title' => 'Export Feed',
+            'save-feed' => [
+                'title' => $this->l('Save Feed'),
                 'class' => 'btn btn-default pull-right',
-                'id'    => 'ffExportFeed',
+                'id'    => 'ffSaveFeed',
                 'icon'  => 'process-icon-download-alt',
+                'href'  => \Context::getContext()->link->getAdminLink('', true, ['route' => 'factfinder.feed.save']),
+            ],
+
+            'upload-feed' => [
+                'title' => $this->l('Upload Feed'),
+                'class' => 'btn btn-default pull-right',
+                'id'    => 'ffUploadFeed',
+                'icon'  => 'process-icon-upload',
             ],
         ];
     }
