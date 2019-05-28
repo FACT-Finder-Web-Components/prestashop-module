@@ -26,7 +26,7 @@ class FtpClient
         $connection = $this->connect($this->config);
 
         try {
-            ftp_fput($connection, $filename ?: $handle->getFilename(), fopen($handle, '+r'), FTP_ASCII);
+            ftp_fput($connection, $filename ?: $handle->getFilename(), fopen($handle->getFileInfo(), '+r'), FTP_ASCII);
         } finally {
             $this->close($connection);
         }
