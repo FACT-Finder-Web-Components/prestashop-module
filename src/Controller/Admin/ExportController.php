@@ -5,10 +5,9 @@ namespace Omikron\Factfinder\Prestashop\Controller\Admin;
 use Omikron\Factfinder\Prestashop\Api\PushImport;
 use Omikron\Factfinder\Prestashop\DataTransferObject\AjaxResponse;
 use Omikron\Factfinder\Prestashop\Export\Output\Csv;
-use Omikron\Factfinder\Prestashop\Export\Output\Dump;
 use Omikron\Factfinder\Prestashop\Model\Export\FtpClient;
 use PrestaShopBundle\Controller\Admin\FrameworkBundleAdminController;
-use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportController extends FrameworkBundleAdminController
 {
@@ -17,32 +16,25 @@ class ExportController extends FrameworkBundleAdminController
         /** @var Csv $csv */
         $csv = $this->get('factfinder.export.output.csv');
 
-        switch (\Tools::getValue('mode')) {
-            case 'dump':
-                /** @var Dump $dumper */
-                $dumper = $this->get('factfinder.export.output.dump');
-                $dumper->write();
-                $response = new Response();
-                break;
-            default:
-                try {
-                    /** @var FtpClient $ftp */
-                    $ftp = $this->get('factfinder.export_ftp');
-                    $ftp->upload($csv->write(), (string) $this->get('factfinder.export.catalog.name_provider'));
+        try {
+            /** @var FtpClient $ftp */
+            $ftp = $this->get('factfinder.export_ftp');
+            $ftp->upload($csv->write(), (string) $this->get('factfinder.export.catalog.name_provider'));
 
-                    /** @var PushImport $pushImport */
-                    $pushImport = $this->get('factfinder.api_push_import');
-                    $pushImport->execute();
+            /** @var PushImport $pushImport */
+            $pushImport = $this->get('factfinder.api_push_import');
+            $pushImport->execute();
 
-                    $response = $this->json(new AjaxResponse(
-                        'Feed was successfully generated and uploaded to ' . $this->get('factfinder.config.ftp_params')->getHost()));
-                } catch (\Exception $e) {
-                    $response = $this->json(new AjaxResponse('Feed Export failed. Reason:', $e->getMessage()), 400);
-                }
-                break;
+            $ftpHost = $this->get('factfinder.config.ftp_params')->getHost();
+            return $this->json(new AjaxResponse('Feed was successfully generated and uploaded to ' . $ftpHost));
+        } catch (\Exception $e) {
+            return $this->json(new AjaxResponse('Feed Export failed. Reason:', $e->getMessage()), 400);
         }
+    }
 
-        return $response;
+    public function dumpAction()
+    {
+        return StreamedResponse::create([$this->get('factfinder.export.output.dump'), 'write']);
     }
 
     public function saveAction()

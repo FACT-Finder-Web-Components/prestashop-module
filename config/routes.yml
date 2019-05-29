@@ -10,8 +10,12 @@ _api_factfinder_admin_connection_test:
   defaults:
     _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\TestConnection::testConnectionAction'
 
+factfinder.export.dump:
+  path: factfinder/export/dump
+  methods: GET
+  controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::dumpAction'
+
 factfinder.feed.save:
   path: factfinder/feed/save
   methods: GET
-  defaults:
-    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::saveAction'
+  controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::saveAction'
