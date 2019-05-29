@@ -10,16 +10,12 @@ class PushImport
     /** @var ClientInterface */
     private $apiClient;
 
-    /** @var int */
-    private $langId;
-
     /** @var string */
     protected $apiName = 'Import.ff';
 
     public function __construct(ClientInterface $apiClient)
     {
         $this->apiClient = $apiClient;
-        $this->langId    = \Context::getContext()->language->id;
     }
 
     public function execute(array $params = [])
@@ -27,7 +23,7 @@ class PushImport
         if (!$this->isPushImportEnabled()) {
             return false;
         }
-        $communicationParams = (new CommunicationParams($this->langId))->getParameters();
+        $communicationParams = (new CommunicationParams($this->langId()))->getParameters();
         $params              += [
             'channel'  => $communicationParams['channel'],
             'quiet'    => 'true',
@@ -49,7 +45,7 @@ class PushImport
      */
     private function getPushImportDataTypes()
     {
-        return explode(',', \Configuration::get('FF_PUSHED_IMPORT_TYPES', $this->langId));
+        return explode(',', \Configuration::get('FF_PUSHED_IMPORT_TYPES', $this->langId()));
     }
 
     /**
@@ -57,6 +53,14 @@ class PushImport
      */
     private function isPushImportEnabled()
     {
-        return (bool) \Configuration::get('FF_AUTOMATIC_IMPORT', $this->langId);
+        return (bool) \Configuration::get('FF_AUTOMATIC_IMPORT', $this->langId());
+    }
+
+    /**
+     * @return int
+     */
+    private function langId()
+    {
+        return \Context::getContext()->language->id;
     }
 }

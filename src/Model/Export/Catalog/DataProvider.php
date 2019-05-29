@@ -22,9 +22,10 @@ class DataProvider implements DataProviderInterface
      */
     public function getEntities()
     {
-        yield from [];
         foreach ($this->products as $product) {
-            yield from $this->entitiesFrom($product)->getEntities();
+            foreach ($this->entitiesFrom($product)->getEntities() as $entity) {
+                yield $entity;
+            }
         }
     }
 

@@ -2,7 +2,7 @@
 
 namespace Omikron\Factfinder\Prestashop\DataTransferObject;
 
-class AjaxResponse
+class AjaxResponse implements \JsonSerializable
 {
     /** @var string */
     private $responseText;
@@ -46,5 +46,10 @@ class AjaxResponse
     public function addError($error)
     {
         $this->errors[] = $error;
+    }
+
+    public function jsonSerialize()
+    {
+        return ['responseText' => $this->responseText, 'errors' => $this->errors];
     }
 }

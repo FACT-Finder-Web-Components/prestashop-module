@@ -27,7 +27,7 @@ class ConfigurableDataProvider extends ProductDataProvider
     public function getEntities()
     {
         foreach (parent::getEntities() as $entity) yield $entity;
-        yield from array_map($this->combinationCallback($this->productData), $this->getCombinations($this->productData['id_product']));
+        foreach (array_map($this->combinationCallback($this->productData), $this->getCombinations($this->productData['id_product'])) as $entity) yield $entity;
     }
 
     /**
@@ -66,7 +66,10 @@ class ConfigurableDataProvider extends ProductDataProvider
     {
         if (!$this->attributes) {
             $this->attributes = array_reduce($this->getCombinationsAttributes(), function (array $res, array $combination) {
-                foreach ($combination as ['id_product_attribute' => $combinationId, 'group_name' => $label, 'attribute_name' => $value]) {
+                foreach ($combination as $attribute) {
+                    $combinationId= $attribute['id_product_attribute'];
+                    $label = $attribute['group_name'];
+                    $value = $attribute['attribute_name'];
                     $res[$combinationId][] = "{$this->filter->filterValue($label)}={$this->filter->filterValue($value)}";
                 }
                 return $res;
@@ -83,7 +86,7 @@ class ConfigurableDataProvider extends ProductDataProvider
     private function getCombinationsAttributes()
     {
         return array_reduce($this->getCombinations($this->productData['id_product']), function (array $attributes, array $combination) {
-            $product = new \Product($this->productData['id_product']);
+            $product = new \ProductCore($this->productData['id_product']);
             $attributes[$combination['id_product_attribute']] = $product->getAttributeCombinationsById($combination['id_product_attribute'], $this->languageId);
             return $attributes;
         }, []);
