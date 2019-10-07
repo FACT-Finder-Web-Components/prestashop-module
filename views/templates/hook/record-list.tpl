@@ -2,13 +2,13 @@
     <ff-record>
         <article class="product-miniature js-product-miniature" data-id-product="{literal}{{record.MagentoEntityId}}{/literal}" itemscope itemtype="http://schema.org/Product">
             <div class="thumbnail-container">
-                <a href="{literal}{{record.ProductUrl}}{/literal}" class="thumbnail product-thumbnail">
+                <a data-anchor="{literal}{{record.ProductUrl}}{/literal}" data-redirect="{literal}{{record.ProductUrl}}{/literal}" data-redirect-target="_self" class="thumbnail product-thumbnail">
                     <img data-image data-image-onerror="{$urls.no_picture_image.medium.url}" alt="{literal}{{record.Name}}{/literal}"/>
                 </a>
 
                 <div class="product-description">
                     <h2 class="h3 product-title" itemprop="name">
-                        <a href="{literal}{{record.ProductUrl}}{/literal}">{literal}{{record.Name}}{/literal}</a>
+                        <a data-anchor="{literal}{{record.ProductUrl}}{/literal}" data-redirect="{literal}{{record.ProductUrl}}{/literal}" data-redirect-target="_self">{literal}{{record.Name}}{/literal}</a>
                     </h2>
 
                     <div class="product-price-and-shipping">
