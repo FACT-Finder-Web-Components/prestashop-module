@@ -1,6 +1,6 @@
 {strip}
 <ff-communication {foreach key=$key item=$value from=$ff.communicationParams}
-                    {$key nofilter}="{$value}"
+                    {if $key == 'add-params'}add-params="{$value},{$ff.add_params}"{else}{$key nofilter}="{$value}"{/if}
                   {/foreach}
                   {if $customer.is_logged}user-id="{$customer.id}"{/if}
                   search-immediate="{$ff.search_immediate|default:'false'}"

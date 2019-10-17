@@ -51,7 +51,7 @@ class CommunicationSettings extends AbstractSection implements SectionInterface
                 'type'  => 'text',
                 'label' => $this->l('Add search params'),
                 'desc'  => $this->l('Attach these params to every search request. Example: param1=abcd,param2=xyz'),
-                'name'  => 'FF_ONLY_SEARCH_PARAMS',
+                'name'  => 'FF_ADD_PARAMS',
             ],
 
             'FF_DISABLE_SINGLE_HIT_REDIRECTS' => [

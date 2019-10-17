@@ -25,6 +25,7 @@ class CommunicationParams implements \IteratorAggregate
             'use-url-parameter'           => \Configuration::get('FF_USE_URL_PARAMS') ? 'true' : 'false',
             'disable-single-hit-redirect' => \Configuration::get('FF_DISABLE_SINGLE_HIT_REDIRECTS') ? 'true' : 'false',
             'use-browser-history'         => \Configuration::get('FF_USE_BROWSER_CACHE') ? 'true' : 'false',
+            'add-params'                  => \Configuration::get('FF_ADD_PARAMS'),
         ];
     }
 
