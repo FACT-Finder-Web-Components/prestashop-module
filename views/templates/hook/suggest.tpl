@@ -27,23 +27,17 @@
       <p class="containerCaption">{l s='Suggested products' mod='factfinder'}</p>
       <div>
         <ff-suggest-item class="ff-suggest-element ff-suggest-product" type="productName">
-          <a href="{literal}{{attributes.deeplink}}{/literal}"
-             data-redirect="{literal}{{attributes.deeplink}}{/literal}" data-redirect-target="_blank">
-            <div class="container-image">
-              <img class="img-fluid" data-image="{literal}{{image}}{/literal}" />
-            </div>
-          </a>
+          <div class="container-image">
+            <img class="img-fluid" data-image="{literal}{{image}}{/literal}" />
+          </div>
           <div class="product-info">
-            <a href="{literal}{{attributes.deeplink}}{/literal}"
-               data-redirect="{literal}{{attributes.deeplink}}{/literal}" data-redirect-target="_blank">
-              <div class="product-name">{literal}{{{name}}}{/literal}</div>
-              <div class="product-brand">{literal}{{{attributes.Brand}}}{/literal}</div>
-              <div class="product-availability">
-                {literal}{{#attributes.Availability}}{/literal}{l s='Available' mod='factfinder'}{literal}{{/attributes.Availability}}{/literal}
-                {literal}{{^attributes.Availability}}{/literal}{l s='Out of stock' mod='factfinder'}{literal}{{/attributes.Availability}}{/literal}
-              </div>
-              <div class="product-price">{literal}{{attributes.Price}}{/literal}</div>
-            </a>
+            <div class="product-name">{literal}{{{name}}}{/literal}</div>
+            <div class="product-brand">{literal}{{{attributes.Brand}}}{/literal}</div>
+            <div class="product-availability">
+              {literal}{{#attributes.Availability}}{/literal}{l s='Available' mod='factfinder'}{literal}{{/attributes.Availability}}{/literal}
+              {literal}{{^attributes.Availability}}{/literal}{l s='Out of stock' mod='factfinder'}{literal}{{/attributes.Availability}}{/literal}
+            </div>
+            <div class="product-price">{literal}{{attributes.Price}}{/literal}</div>
           </div>
         </ff-suggest-item>
       </div>

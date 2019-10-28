@@ -9,7 +9,7 @@ class FieldRoles implements \JsonSerializable
         return [
             'brand'                 => 'Brand',
             'campaignProductNumber' => 'ProductNumber',
-            'deeplink'              => 'ProductURL',
+            'deeplink'              => 'ProductUrl',
             'description'           => 'Description',
             'displayProductNumber'  => 'ProductNumber',
             'ean'                   => 'ProductNumber',

@@ -1,9 +1,9 @@
 <ff-record-list unresolved class="products row">
     <ff-record>
-        <article class="product-miniature js-product-miniature" data-id-product="{literal}{{record.MagentoEntityId}}{/literal}" itemscope itemtype="http://schema.org/Product">
+        <article class="product-miniature js-product-miniature" data-id-product="{literal}{{record.PrestaID}}{/literal}" itemscope itemtype="http://schema.org/Product">
             <div class="thumbnail-container">
                 <a data-anchor="{literal}{{record.ProductUrl}}{/literal}" data-redirect="{literal}{{record.ProductUrl}}{/literal}" data-redirect-target="_self" class="thumbnail product-thumbnail">
-                    <img data-image data-image-onerror="{$urls.no_picture_image.medium.url}" alt="{literal}{{record.Name}}{/literal}"/>
+                    <img data-image="{literal}{{record.ImageUrl}}{/literal}" data-image-onerror="{$urls.no_picture_image.medium.url}" alt="{literal}{{record.Name}}{/literal}"/>
                 </a>
 
                 <div class="product-description">

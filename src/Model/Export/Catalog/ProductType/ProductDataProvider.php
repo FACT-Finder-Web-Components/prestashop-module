@@ -69,11 +69,11 @@ class ProductDataProvider implements DataProviderInterface, ExportEntityInterfac
             'Master'        => $this->productData['reference'] ?: $this->productData['id_product'],
             'Name'          => $this->productData['name'],
             'Description'   => strip_tags($this->productData['description']),
-            'ImageURL'      => $this->productData['image_link'],
+            'ImageUrl'      => $this->productData['image_link'],
             'Price'         => $this->numberFormatter->format($this->productData['price_final']),
             'Brand'         => \Manufacturer::getNameById($this->productData['id_manufacturer']) ?: '',
             'Availability'  => (int) (bool) $this->productData['sav_quantity'],
-            'ProductURL'    => $this->link->getProductLink($this->productData['id_product']),
+            'ProductUrl'    => $this->link->getProductLink($this->productData['id_product']),
             'PrestaID'      => $this->productData['id_product'],
         ];
 
