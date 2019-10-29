@@ -35,6 +35,7 @@ ff-suggest .productsContainer {
 }
 
 ff-suggest-item {
+    cursor: pointer;
     margin: .3125rem 0;
 }
 
@@ -46,10 +47,6 @@ ff-suggest-item {
     font-size: 1rem;
     font-weight: bold;
     margin: 0 0 .625rem;
-}
-
-ff-suggest-item > span {
-    cursor: pointer;
 }
 
 ff-suggest-item .product-brand,

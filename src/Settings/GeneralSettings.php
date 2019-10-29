@@ -58,6 +58,13 @@ class GeneralSettings extends AbstractSection implements SectionInterface
                 'label' => $this->l('Authentication Postfix'),
                 'name'  => 'FF_AUTHENTICATION_POSTFIX',
             ],
+
+            'FF_USE_FOR_CATEGORIES' => [
+                'type'   => 'switch',
+                'label'  => $this->l('Use FACT-Finder® for category pages?'),
+                'name'   => 'FF_USE_FOR_CATEGORIES',
+                'values' => [['value' => '1'], ['value' => '0']],
+            ],
         ];
     }
 

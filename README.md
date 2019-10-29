@@ -2,7 +2,7 @@
 
 ## Requirements
 - PrestaShop 1.7.x
-- PHP version 7.0 or higher
+- PHP version 5.6 or higher
 
 ## License
 FACT-Finder® Web Components License. For more information see the [LICENSE](LICENSE) file.

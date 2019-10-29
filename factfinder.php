@@ -7,6 +7,7 @@ if (!defined('_PS_VERSION_')) {
 use Omikron\Factfinder\Prestashop\Config\CommunicationParams;
 use Omikron\Factfinder\Prestashop\Config\FieldRoles;
 use Omikron\Factfinder\Prestashop\FeaturesConfig;
+use Omikron\Factfinder\Prestashop\Model\CategoryFilter;
 use Omikron\Factfinder\Prestashop\Settings\SettingsForm;
 use Omikron\Factfinder\Prestashop\Translate;
 use PrestaShop\PrestaShop\Adapter\Admin\AbstractAdminQueryBuilder as QueryBuilder;
@@ -15,7 +16,7 @@ use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Factfinder extends Module implements WidgetInterface
 {
-    const WEB_COMPONENTS = 'ff-web-components-3.7.0';
+    const WEB_COMPONENTS = 'ff-web-components-3.8.0';
 
     /** @var string */
     public $name = 'factfinder';
@@ -67,6 +68,7 @@ class Factfinder extends Module implements WidgetInterface
             && $this->registerHook('actionAdminProductsListingFieldsModifier')
             && $this->registerHook('displayAfterBodyOpeningTag')
             && $this->registerHook('displayOrderConfirmation')
+            && $this->registerHook('DisplayOverrideTemplate')
             && $this->registerHook('displayTop')
             && $this->registerHook('header')
             && $this->registerHook('moduleRoutes');
@@ -74,13 +76,15 @@ class Factfinder extends Module implements WidgetInterface
 
     public function uninstall()
     {
-        return parent::uninstall()
-            && $this->unregisterHook('actionAdminProductsListingFieldsModifier')
-            && $this->unregisterHook('displayAfterBodyOpeningTag')
-            && $this->unregisterHook('displayOrderConfirmation')
-            && $this->unregisterHook('displayTop')
-            && $this->unregisterHook('header')
-            && $this->unregisterHook('moduleRoutes');
+        parent::uninstall();
+        $this->unregisterHook('actionAdminProductsListingFieldsModifier');
+        $this->unregisterHook('displayAfterBodyOpeningTag');
+        $this->unregisterHook('displayOrderConfirmation');
+        $this->unregisterHook('DisplayOverrideTemplate');
+        $this->unregisterHook('displayTop');
+        $this->unregisterHook('header');
+        $this->unregisterHook('moduleRoutes');
+        return true;
     }
 
     public function hookHeader()
@@ -90,6 +94,24 @@ class Factfinder extends Module implements WidgetInterface
         $this->registerJavascript('vendor/custom-elements-es5-adapter.js');
         $this->registerJavascript('vendor/webcomponents-loader.js');
         $this->registerJavascript('bundle.js', ['attributes' => 'defer']);
+    }
+
+    public function hookDisplayOverrideTemplate(array $args)
+    {
+        switch ($args['template_file']) {
+            case 'catalog/listing/category':
+                if (!Configuration::get('FF_USE_FOR_CATEGORIES')) {
+                    break;
+                }
+
+                $this->context->smarty->assign('ff', [
+                    'features'         => new FeaturesConfig(),
+                    'search_immediate' => 'true',
+                    'add_params'       => new CategoryFilter($args['controller']->getCategory()),
+                ]);
+
+                return 'module:factfinder/views/templates/front/category.tpl';
+        }
     }
 
     public function hookActionAdminProductsListingFieldsModifier($sqlParts)
