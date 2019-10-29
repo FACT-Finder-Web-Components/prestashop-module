@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Omikron\Factfinder\Prestashop\Model;
 
 use Category;

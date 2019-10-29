@@ -18,7 +18,7 @@
 
         factfinder.communication.FFCommunicationEventAggregator.addBeforeDispatchingCallback(function (event) {
             var redirectPath = '{/literal}{$ff.url.search}{literal}';
-            if (event.type === 'search' && !event.__immediate) {
+            if (event.type === 'search' && window.location.href.indexOf(redirectPath) < 0 && !event.__immediate) {
                 delete event.type;
                 window.location = redirectPath + factfinder.common.dictToParameterString(event);
             }
