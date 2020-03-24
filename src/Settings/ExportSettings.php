@@ -68,7 +68,7 @@ class ExportSettings extends AbstractSection implements SectionInterface
                 'options'  => [
                     'id'    => 0,
                     'name'  => 0,
-                    'query' => [['Data'], ['Suggest']],
+                    'query' => [['Data'], ['Suggest'], ['Recommendation']],
                 ],
             ],
 

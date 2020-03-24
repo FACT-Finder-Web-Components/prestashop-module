@@ -33,7 +33,7 @@ class PushImport
         $response = [];
         $endpoint = $communicationParams['url'] . '/' . $this->apiName;
         foreach ($this->getPushImportDataTypes() as $type) {
-            $params['type'] = $type;
+            $params['type'] = strtolower($type);
             $response       = array_merge_recursive($response, $this->apiClient->sendRequest($endpoint, $params));
         }
 
