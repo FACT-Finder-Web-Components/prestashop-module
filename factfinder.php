@@ -16,7 +16,7 @@ use PrestaShop\PrestaShop\Core\Module\WidgetInterface;
 
 class Factfinder extends Module implements WidgetInterface
 {
-    const WEB_COMPONENTS = 'ff-web-components-3.8.0';
+    const WEB_COMPONENTS = 'ff-web-components-3.13.0';
 
     /** @var string */
     public $name = 'factfinder';
