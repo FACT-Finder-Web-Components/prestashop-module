@@ -1,0 +1,91 @@
+[unresolved] {
+    opacity: 0;
+    display: none;
+}
+
+.ff-breadcrumb-trail { margin:  .9375rem 0; }
+
+ff-breadcrumb-trail-item { font-weight: bold; color: #2fb5d2; }
+ff-breadcrumb-trail-item:hover { color: #2592a9; }
+
+ff-record .product-miniature img {
+    width: 100%;
+    max-width: 250px;
+}
+
+ff-sortbox, ff-products-per-page-dropdown {
+    width: 100%;
+}
+
+ff-sortbox .ffw-selected, ff-products-per-page-dropdown > .ffw-selected {
+    display: block;
+    width: 100%;
+    color: #232323;
+    background: #fff;
+    padding: .625rem;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, .25);
+    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, .2)
+}
+
+ff-sortbox .ffw-dropdown-container, .ffw-ppp-dropdown-container {
+    z-index: 1000;
+    float: left;
+    min-width: 10rem;
+    padding: .5rem 0;
+    font-size: 1rem;
+    color: #373a3c;
+    text-align: left;
+    list-style: none;
+    background-clip: padding-box;
+    border-radius: 0;
+    background: #f6f6f6;
+    border: none;
+    box-shadow: 2px 2px 4px 0 rgba(0, 0, 0, .1);
+    margin: 0
+}
+
+.ffw-dropdown-container ff-sortbox-item, .ffw-ppp-dropdown-container ff-products-per-page-item {
+    display: block;
+    color: #232323;
+    padding: .625rem 1.25rem;
+}
+
+.ffw-dropdown-container ff-sortbox-item:hover, .ffw-ppp-dropdown-container ff-products-per-page-item:hover {
+    background: #2fb5d2;
+    color: #fff;
+}
+
+.ffw-dropdown-container i, .ffw-ppp-dropdown-container i {
+    display: none;
+}
+
+.ffw-asn-group-container {
+    margin-bottom: 1rem;
+}
+
+ff-asn-group {
+    font-size: .9375rem;
+}
+ff-asn-group .groupCaption {
+    cursor: pointer;
+}
+
+ff-asn-group .filterName {
+    cursor: pointer;
+}
+
+ff-asn-group-element, [data-container="detailedLinks"] ~ div {
+    margin-top: .4375rem;
+}
+
+@media (max-width: 767px) {
+    .ffw-selected-container {
+        margin-left: 0
+    }
+}
+
+.ff-paging {
+    padding: 1em 0;
+    text-align: center;
+}

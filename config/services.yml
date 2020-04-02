@@ -1,0 +1,114 @@
+parameters:
+  factfinder.export.catalog.columns:
+    ProductNumber: 'ProductNumber'
+    Master: 'Master'
+    Name: 'Name'
+    Description: 'Description'
+    ImageUrl: 'ImageUrl'
+    Price:  'Price'
+    Brand: 'Brand'
+    Availability: 'Availability'
+    ProductUrl: 'ProductUrl'
+    PrestaID: 'PrestaID'
+    CategoryPath: 'CategoryPath'
+    Attributes: 'Attributes'
+
+services:
+  _defaults:
+    public: true
+
+  factfinder.config.ftp_params:
+    class: Omikron\Factfinder\Prestashop\Config\FtpParams
+
+  factfinder.api_client_interface:
+    class: Omikron\Factfinder\Prestashop\Model\Api\ClientInterface
+    public: false
+
+  factfinder.serializer_interface:
+    class: Omikron\Factfinder\Prestashop\Serializer\SerializerInterface
+
+  factfinder.export.data_provider_interface:
+    class: Omikron\Factfinder\Prestashop\Model\Export\DataProviderInterface
+
+  factfinder.json_serializer:
+    class: Omikron\Factfinder\Prestashop\Serializer\Json
+    decorates: factfinder.serializer_interface
+
+  factfinder.plain_text_serializer:
+    class: Omikron\Factfinder\Prestashop\Serializer\PlainText
+
+  factfinder.export.output.csv:
+    class: Omikron\Factfinder\Prestashop\Export\Output\Csv
+    arguments:
+      - '@factfinder.export.data_provider_interface'
+      - '%factfinder.export.catalog.columns%'
+
+  factfinder.export.output.dump:
+    class: Omikron\Factfinder\Prestashop\Export\Output\Dump
+    arguments:
+      - '@factfinder.export.data_provider_interface'
+      - '%factfinder.export.catalog.columns%'
+
+  factfinder.export.catalog.data_provider:
+    class: Omikron\Factfinder\Prestashop\Model\Export\Catalog\DataProvider
+    decorates:  factfinder.export.data_provider_interface
+    arguments: ['@prestashop.core.admin.data_provider.product_interface']
+
+  factfinder.api_client:
+    class: Omikron\Factfinder\Prestashop\Model\Api\Client
+    decorates: factfinder.api_client_interface
+    arguments: ['@factfinder.json_serializer']
+
+  factfinder.api_test_connection:
+    class: Omikron\Factfinder\Prestashop\Api\TestConnection
+    arguments: ['@factfinder.api_client_interface']
+
+  factfinder.api_push_import:
+    class: Omikron\Factfinder\Prestashop\Api\PushImport
+    arguments: ['@factfinder.api_client_interface']
+
+  factfinder.api_test_connection_listener:
+    class: Omikron\Factfinder\Prestashop\EventListener\TestConnectionArgumentConverter
+    tags:
+      - { name: kernel.event_listener, event: kernel.controller, method: onKernelController }
+    arguments: ['@serializer']
+
+  factfinder.export_ftp:
+    class: Omikron\Factfinder\Prestashop\Model\Export\FtpClient
+    arguments: ['@factfinder.config.ftp_params']
+
+  factfinder.export.catalog.name_provider:
+    class: Omikron\Factfinder\Prestashop\Model\Export\Catalog\NameProvider
+
+  factfinder.export.catalog.csv_download:
+    class: PrestaShopBundle\Component\CsvResponse
+    arguments:
+      - '@factfinder.export.output.csv'
+    calls:
+      - method: setFileName
+        arguments: ['@=service("factfinder.export.catalog.name_provider").getName()']
+
+  factfinder.cron.emulate_environment:
+    class: Omikron\Factfinder\Prestashop\Model\Cron\EmulateEnvironment
+    public: false
+
+  factfinder.export.file_writer:
+    class: Omikron\Factfinder\Prestashop\Model\Export\FileWriter
+
+  factfinder.command.feed.upload:
+    class: Omikron\Factfinder\Prestashop\Command\Feed\UploadCommand
+    arguments:
+      - '@factfinder.export.output.csv'
+      - '@factfinder.cron.emulate_environment'
+      - '@factfinder.export_ftp'
+      - '@factfinder.api_push_import'
+    tags: ['console.command']
+
+  factfinder.command.feed.save:
+    class: Omikron\Factfinder\Prestashop\Command\Feed\SaveCommand
+    arguments:
+      - '@kernel'
+      - '@factfinder.export.output.csv'
+      - '@factfinder.cron.emulate_environment'
+      - '@factfinder.export.file_writer'
+    tags: ['console.command']

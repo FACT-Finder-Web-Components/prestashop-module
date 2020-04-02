@@ -1,0 +1,21 @@
+_api_factfinder_admin_export:
+  path: factfinder/export
+  methods: [POST,GET] #@todo change to post only
+  defaults:
+    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::exportAction'
+
+_api_factfinder_admin_connection_test:
+  path: factfinder/test
+  methods: [POST]
+  defaults:
+    _controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\TestConnection::testConnectionAction'
+
+factfinder.export.dump:
+  path: factfinder/export/dump
+  methods: GET
+  controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::dumpAction'
+
+factfinder.feed.save:
+  path: factfinder/feed/save
+  methods: GET
+  controller: 'Omikron\Factfinder\Prestashop\Controller\Admin\ExportController::saveAction'

@@ -1,0 +1,28 @@
+{
+  "name": "omikron/prestashop-factfinder",
+  "description": "FACT-Finder® Web Components for PrestaShop",
+  "type": "prestashop-module",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Omikron Data Quality GmbH",
+      "homepage": "https://web-components.fact-finder.de"
+    }
+  ],
+  "require": {
+    "php": "^5.6 || ^7.0",
+    "ext-json": "*",
+    "ext-ftp": "*"
+  },
+  "require-dev": {
+    "squizlabs/php_codesniffer": "^3.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Omikron\\Factfinder\\Prestashop\\": "src/"
+    }
+  },
+  "extra": {
+    "installer-name": "factfinder"
+  }
+}
